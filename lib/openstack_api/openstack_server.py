@@ -1,7 +1,7 @@
-from typing import List, Dict, Callable, Any
+from typing import List, Dict, Callable, Any, Optional
 
 from openstack.compute.v2.server import Server
-from openstack.exceptions import HttpException
+from openstack.exceptions import HttpException, ItemNotFoundError, ResourceTimeout
 from openstack_api.dataclasses import (
     NonExistentCheckParams,
     NonExistentProjectCheckParams,
@@ -12,6 +12,9 @@ from openstack_api.openstack_query_email_base import OpenstackQueryEmailBase
 from openstack_api.openstack_identity import OpenstackIdentity
 from openstack_api.dataclasses import EmailQueryParams
 from openstack_api.openstack_wrapper_base import OpenstackWrapperBase
+
+from enum.server_status import ServerStatus
+from exceptions.missing_mandatory_param_error import MissingMandatoryParamError
 
 
 class OpenstackServer(OpenstackWrapperBase, OpenstackQueryEmailBase):
@@ -395,3 +398,19 @@ class OpenstackServer(OpenstackWrapperBase, OpenstackQueryEmailBase):
                 object_project_param_name="project_id",
             ),
         )
+
+    def find_server(
+        self, cloud_account: str, server_identifier: str
+    ) -> Optional[Server]:
+        """
+        Returns a given server using the name or ID
+        :param cloud_account: The associated clouds.yaml account
+        :param server_identifier: The ID or name to search for
+        :return: The found server or None
+        """
+        server_identifier = server_identifier.strip()
+        if not server_identifier:
+            raise MissingMandatoryParamError("A server identifier is required")
+
+        with self._connection_cls(cloud_account) as conn:
+            return conn.network.find_server(server_identifier, ignore_missing=True)

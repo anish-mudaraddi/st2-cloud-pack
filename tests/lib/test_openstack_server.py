@@ -2,10 +2,14 @@ from dataclasses import dataclass
 import datetime
 import unittest
 from unittest import mock
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, NonCallableMock, Mock
 
+from nose.tools import raises
 import openstack
+
 from openstack.exceptions import HttpException
+from exceptions.item_not_found_error import ItemNotFoundError
+from exceptions.missing_mandatory_param_error import MissingMandatoryParamError
 
 from openstack_api.openstack_server import OpenstackServer
 
@@ -458,3 +462,22 @@ class OpenstackServerTests(unittest.TestCase, OpenstackQueryEmailBaseTests):
         result = self.instance.find_non_existent_projects(cloud_account="test")
 
         self.assertEqual(result, {"ProjectID1": ["ServerID1", "ServerID2"]})
+
+    @raises(MissingMandatoryParamError)
+    def test_find_server_raises_for_missing_param(self):
+        """
+        Tests that find server will raise error if the identifier is missing
+        """
+        self.instance.find_server(NonCallableMock(), " ")
+
+    def test_find_server_with_found_result(self):
+        """
+        Tests that find server returns the result as-is
+        """
+        cloud, identifier = NonCallableMock(), NonCallableMock()
+        _ = self.instance.find_server(cloud, identifier)
+
+        self.mocked_connection.assert_called_once_with(cloud)
+        self.api.find_network.assert_called_once_with(
+            identifier.strip(), ignore_missing=True
+        )
