@@ -49,13 +49,13 @@ class OpenstackServer(OpenstackWrapperBase, OpenstackQueryEmailBase):
         """
         Returns whether a server has error in its status
         """
-        return "ERROR" in server["status"]
+        return ServerStatus.ERROR in server["status"]
 
     def _query_shutoff(self, server: Server):
         """
         Returns whether a server has shutoff in its status
         """
-        return "SHUTOFF" in server["status"]
+        return ServerStatus.SHUTOFF in server["status"]
 
     def __init__(self, connection_cls=OpenstackConnection):
         OpenstackWrapperBase.__init__(self, connection_cls)
