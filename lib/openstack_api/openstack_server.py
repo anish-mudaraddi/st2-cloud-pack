@@ -484,3 +484,32 @@ class OpenstackServer(OpenstackWrapperBase, OpenstackQueryEmailBase):
         except ResourceTimeout:
             raise RuntimeError("Action Timed out, server may not have updated")
         return True
+
+    def reboot_server(self, cloud_account: str, server_identifier: str, hard_reboot_flag: bool = False) -> bool:
+        """
+        Reboot Server
+        :param cloud_account: The associated clouds.yaml account
+        :param server_identifier: Server given Name or ID
+        :param hard_reboot_flag: A flag which sets if a hard reboot is requested (power-cycle)
+        :return:  If the server was restarted, error message if any
+        """
+        server = self.find_server(cloud_account, server_identifier)
+        if not server:
+            raise ItemNotFoundError("The specified server was not found")
+
+        if server["status"] is not ServerStatus.ACTIVE:
+            raise RuntimeError(
+                "The specified server is not ACTIVE, cannot be rebooted (current status: %s)"
+                % server["status"]
+            )
+
+        self.conn.compute.reboot_server(
+            server,
+            "HARD" if hard_reboot_flag else "SOFT"
+        )
+
+        try:
+            self._wait_for_change(server, ServerStatus.ACTIVE)
+        except ResourceTimeout:
+            raise RuntimeError("Action Timed out, server may not have been rebooted")
+        return True

@@ -3,6 +3,7 @@ import datetime
 import unittest
 from unittest import mock
 from unittest.mock import MagicMock, patch, NonCallableMock, Mock
+from parameterized import parameterized
 
 from nose.tools import raises
 import openstack
@@ -554,5 +555,45 @@ class OpenstackServerTests(unittest.TestCase, OpenstackQueryEmailBaseTests):
         self.mocked_connection.assert_called_once_with(cloud)
         self.instance._OpenstackServer_wait_for_change.assert_called_once_with(
             self.instance.find_server.return_value, "SHUTOFF"
+        )
+        assert returned
+
+    @raises(ItemNotFoundError)
+    def test_reboot_server_not_found(self):
+        """
+        Test that reboot server will raise error if server not found
+        """
+        cloud, identifier = NonCallableMock(), NonCallableMock()
+
+        self.instance.find_server = Mock(return_value=None)
+        self.instance.reboot_server(cloud, identifier)
+
+    @raises(RuntimeError)
+    def test_reboot_server_not_active(self):
+        """
+        Test that reboot server will raise error if the server was not ACTIVE
+        """
+        cloud, identifier = NonCallableMock(), NonCallableMock()
+        self.instance.find_server = Mock(return_value={"status": "SHUTOFF"})
+        returned = self.instance.reboot_server(cloud, identifier)
+
+    @parameterized([True, False])
+    def test_reboot_server_success_reboot(self, reboot_flag):
+        """
+        Test that reboot server forwards the correct args to OpenStack
+        """
+        cloud, identifier = NonCallableMock(), NonCallableMock()
+        self.instance.find_server = Mock(return_value={"status": "ACTIVE"})
+        self.instance._OpenstackServer_wait_for_change = Mock()
+        returned = self.instance.reboot_server(cloud, identifier, hard_reboot_flag=reboot_flag)
+
+        self.instance.find_server.assert_called_once_with(identifier)
+        self.api.reboot_server.assert_called_once_with(
+            self.instance.find_server.return_value,
+            reboot_flag
+        )
+        self.mocked_connection.assert_called_once_with(cloud)
+        self.instance._OpenstackServer_wait_for_change.assert_called_once_with(
+            self.instance.find_server.return_value, "ACTIVE"
         )
         assert returned
