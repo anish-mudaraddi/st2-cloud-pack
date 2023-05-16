@@ -5,7 +5,7 @@ from unittest import mock
 from unittest.mock import MagicMock, patch, NonCallableMock, Mock
 from parameterized import parameterized
 
-from nose.tools import raises
+from nose.tools import raises, assert_raises
 import openstack
 
 from openstack.exceptions import HttpException
@@ -13,6 +13,8 @@ from exceptions.item_not_found_error import ItemNotFoundError
 from exceptions.missing_mandatory_param_error import MissingMandatoryParamError
 
 from openstack_api.openstack_server import OpenstackServer
+from openstack_api.openstack_image import OpenstackImage
+from openstack_api.openstack_flavor import OpenstackFlavor
 
 from tests.lib.test_openstack_query_email_base import OpenstackQueryEmailBaseTests
 
@@ -597,3 +599,16 @@ class OpenstackServerTests(unittest.TestCase, OpenstackQueryEmailBaseTests):
             self.instance.find_server.return_value, "ACTIVE"
         )
         assert returned
+
+    def test_create_server_missing_params(self):
+        """
+        Test that create server will raise error if mandatory params are missing
+        """
+        for i in ["name", "flavor_identifier", "image_identifier"]:
+            mocked_server_details = NonCallableMock()
+            setattr(mocked_server_details, i, "  \t")
+            with assert_raises(MissingMandatoryParamError) as e:
+                self.instance.create_server(mocked_server_details, NonCallableMock())
+
+        with assert_raises(MissingMandatoryParamError) as e:
+            self.instance.create_server(mocked_server_details, "   \t")

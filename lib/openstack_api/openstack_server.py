@@ -10,12 +10,16 @@ from openstack_api.dataclasses import (
 from openstack_api.openstack_connection import OpenstackConnection
 from openstack_api.openstack_query_email_base import OpenstackQueryEmailBase
 from openstack_api.openstack_identity import OpenstackIdentity
+from openstack_api.openstack_flavor import OpenstackFlavor
+from openstack_api.openstack_image import OpenstackImage
+
 from openstack_api.dataclasses import EmailQueryParams
 from openstack_api.openstack_wrapper_base import OpenstackWrapperBase
 
 from enum.server_status import ServerStatus
 from exceptions.missing_mandatory_param_error import MissingMandatoryParamError
 
+from struct.server_details import ServerDetails
 
 class OpenstackServer(OpenstackWrapperBase, OpenstackQueryEmailBase):
     # Lists all possible query client_side for server.list
@@ -69,6 +73,8 @@ class OpenstackServer(OpenstackWrapperBase, OpenstackQueryEmailBase):
             ),
         )
         self._identity_api = OpenstackIdentity(self._connection_cls)
+        self._flavor_api = OpenstackFlavor(self._connection_cls)
+        self._image_api = OpenstackImage(self._connection_cls)
 
     def get_query_property_funcs(
         self, cloud_account: str
@@ -513,3 +519,56 @@ class OpenstackServer(OpenstackWrapperBase, OpenstackQueryEmailBase):
         except ResourceTimeout:
             raise RuntimeError("Action Timed out, server may not have been rebooted")
         return True
+
+    def create_server(self, cloud_account: str,
+                      server_details: ServerDetails,
+                      project_identifier) -> Optional[Server]:
+        """
+        Creates a Server
+        :param cloud_account: The associated clouds.yaml account
+        :param server_details: A struct containing all details related to this new server
+        :param project_identifier: Project to create server in
+        :return: A Server object, or None
+        """
+
+        server_details.name = server_details.name.strip()
+        if not server_details.name:
+            raise MissingMandatoryParamError("A server name is required")
+
+        if not server_details.flavor_identifier:
+            raise MissingMandatoryParamError("A flavor for the server is required")
+
+        if not server_details.image_identifier:
+            raise MissingMandatoryParamError("An image for the server is required")
+
+        if not project_identifier:
+            raise MissingMandatoryParamError("Please explicitly define a project for the server to be created in")
+
+        flavor = self._flavor_api.find_flavor(server_details.flavor_identifier)
+        if not flavor:
+            raise ItemNotFoundError("The flavor specified was not found")
+
+        image = self._image_api.find_image(server_details.image_identifier)
+        if not image:
+            raise ItemNotFoundError("The image specified was not found")
+
+        project = self._identity_api.find_project(project_identifier)
+        if not project:
+            raise ItemNotFoundError("The project specified was not found")
+
+        project = self._identity_api.find_mandatory_project(
+            cloud_account, project_identifier
+        )
+
+        try:
+            with self._connection_cls(cloud_account).connect_as_project(project["name"]) as conn:
+                server = conn.compute.create_server(
+                    name=server_details.name,
+                    image=server_details.image_identifier,
+                    flavor=server_details.flavor_identifier,
+                    network=server_details.network_identifiers,
+                )
+                conn.compute.wait_for_server(server, ServerStatus.ACTIVE)
+            return server
+        except ResourceTimeout:
+            raise RuntimeError("Action Timed out, server may not have been created")
