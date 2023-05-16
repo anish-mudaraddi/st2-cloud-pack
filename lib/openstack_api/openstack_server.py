@@ -414,3 +414,73 @@ class OpenstackServer(OpenstackWrapperBase, OpenstackQueryEmailBase):
 
         with self._connection_cls(cloud_account) as conn:
             return conn.network.find_server(server_identifier, ignore_missing=True)
+
+    def _wait_for_change(
+        self,
+        server: str,
+        expected_status,
+        interval_checks_seconds=10,
+        timeout_seconds=600,
+    ):
+        """
+        Function wait for a server to change state to expected state
+        :param server: The server name or id
+        :param expected_status: The expected server status to wait for
+        :param interval_checks_seconds: Time between each check
+        :param timeout_seconds: seconds before function timeout
+        """
+        self.conn.compute.wait_for_server(
+            server,
+            status=expected_status,
+            interval=interval_checks_seconds,
+            wait=timeout_seconds,
+        )
+
+    def shutoff_server(self, cloud_account: str, server_identifier: str) -> bool:
+        """
+        Shutoff Server
+        :param cloud_account: The associated clouds.yaml account
+        :param server_identifier: Server given Name or ID
+        :return: If the server was shutdown, error message if any
+        """
+        server = self.find_server(cloud_account, server_identifier)
+        if not server:
+            raise ItemNotFoundError("The specified server was not found")
+
+        if server["status"] is not ServerStatus.ACTIVE:
+            raise RuntimeError(
+                "The specified server is not ACTIVE (current status: %s)"
+                % server["status"]
+            )
+
+        self.conn.compute.stop_server(server)
+
+        try:
+            self._wait_for_change(server, ServerStatus.SHUTOFF)
+        except ResourceTimeout:
+            raise RuntimeError("Action Timed Out, server may not have updated")
+        return True
+
+    def start_server(self, cloud_account: str, server_identifier: str):
+        """
+        Start Shutoff Server
+        :param cloud_account: The associated clouds.yaml account
+        :param server_identifier: Server given Name or ID
+        :return: If the server was started properly, error message if any
+        """
+        server = self.find_server(cloud_account, server_identifier)
+        if not server:
+            raise ItemNotFoundError("The specified server was not found")
+
+        if server["status"] is not ServerStatus.SHUTOFF:
+            raise RuntimeError(
+                "The specified server is not SHUTOFF (current status: %s)"
+                % server["status"]
+            )
+
+        self.conn.compute.start_server(server)
+        try:
+            self._wait_for_change(server, ServerStatus.ACTIVE)
+        except ResourceTimeout:
+            raise RuntimeError("Action Timed out, server may not have updated")
+        return True

@@ -481,3 +481,78 @@ class OpenstackServerTests(unittest.TestCase, OpenstackQueryEmailBaseTests):
         self.api.find_network.assert_called_once_with(
             identifier.strip(), ignore_missing=True
         )
+
+    @raises(ItemNotFoundError)
+    def test_start_server_not_found(self):
+        """
+        Tests that start server will raise error if the server not found
+        """
+        cloud, identifier = NonCallableMock(), NonCallableMock()
+        self.instance.find_server = Mock(return_value=None)
+        self.instance.start_server(cloud, identifier)
+
+    @raises(RuntimeError)
+    def test_start_server_not_active(self):
+        """
+        Tests that start server will raise error if the server was not SHUTOFF
+        """
+        cloud, identifier = NonCallableMock(), NonCallableMock()
+        self.instance.find_server = Mock(return_value={"status": "ACTIVE"})
+        returned = self.instance.start_server(cloud, identifier)
+
+    def test_start_server_success(self):
+        """
+        Tests that start server forwards the correct args to OpenStack
+        """
+        cloud, identifier = NonCallableMock(), NonCallableMock()
+
+        self.instance.find_server = Mock(return_value={"status": "SHUTOFF"})
+        self.instance._OpenstackServer_wait_for_change = Mock()
+        self.instance.start_server(cloud, identifier)
+
+        self.instance.find_server.assert_called_once_with(identifier)
+        self.api.start_server.assert_called_once_with(
+            self.instance.find_server.return_value
+        )
+        self.mocked_connection.assert_called_once_with(cloud)
+        self.instance._OpenstackServer_wait_for_change.assert_called_once_with(
+            self.instance.find_server.return_value, "ACTIVE"
+        )
+
+    @raises(ItemNotFoundError)
+    def test_stop_server_not_found(self):
+        """
+        Tests that stop server will raise error if the server not found
+        """
+        cloud, identifier = NonCallableMock(), NonCallableMock()
+        self.instance.find_server = Mock(return_value=None)
+        self.instance.shutoff_server(cloud, identifier)
+
+    @raises(RuntimeError)
+    def test_stop_server_not_active(self):
+        """
+        Tests that stop server will raise error if the server was not ACTIVE
+        """
+        cloud, identifier = NonCallableMock(), NonCallableMock()
+        self.instance.find_server = Mock(return_value={"status": "SHUTOFF"})
+        returned = self.instance.shutoff_server(cloud, identifier)
+
+    def test_stop_server_success(self):
+        """
+        Tests that stop server forwards the correct args to OpenStack
+        """
+        cloud, identifier = NonCallableMock(), NonCallableMock()
+
+        self.instance.find_server = Mock(return_value={"status": "ACTIVE"})
+        self.instance._OpenstackServer_wait_for_change = Mock()
+        returned = self.instance.shutoff_server(cloud, identifier)
+
+        self.instance.find_server.assert_called_once_with(identifier)
+        self.api.stop_server.assert_called_once_with(
+            self.instance.find_server.return_value
+        )
+        self.mocked_connection.assert_called_once_with(cloud)
+        self.instance._OpenstackServer_wait_for_change.assert_called_once_with(
+            self.instance.find_server.return_value, "SHUTOFF"
+        )
+        assert returned
