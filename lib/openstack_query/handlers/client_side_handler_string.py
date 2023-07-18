@@ -1,6 +1,6 @@
 import re
 
-from typing import List, Any
+from typing import List, Any, Pattern
 from custom_types.openstack_query.aliases import PresetPropMappings
 
 from enums.query.query_presets import QueryPresetsString
@@ -26,13 +26,13 @@ class ClientSideHandlerString(ClientSideHandler):
             QueryPresetsString.NOT_ANY_IN: self._prop_not_any_in,
         }
 
-    def _prop_matches_regex(self, prop: Any, regex_string: str) -> bool:
+    def _prop_matches_regex(self, prop: Any, regex_string: Pattern[str]) -> bool:
         """
         Filter function which returns true if a prop matches a regex pattern
         :param prop: prop value to check against
-        :param regex_string: a string which can be converted into a valid regex pattern to run
+        :param regex_string: a regex pattern to search with
         """
-        return bool(re.match(re.compile(regex_string), prop))
+        return bool(re.match(regex_string, prop))
 
     def _prop_any_in(self, prop: Any, values: List[str]) -> bool:
         """

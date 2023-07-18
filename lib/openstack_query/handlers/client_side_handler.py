@@ -1,4 +1,5 @@
 import inspect
+import re
 from typing import Optional, Tuple
 
 from openstack_query.handlers.handler_base import HandlerBase
@@ -141,6 +142,10 @@ class ClientSideHandler(HandlerBase):
                 if param_name in func_kwargs:
                     kwargs_value = func_kwargs[param_name]
                     param_type = param.annotation
+
+                    # if type is supposed to be a regex pattern
+                    if isinstance(kwargs_value, re.Pattern):
+                        param_type = re.Pattern
 
                     if not isinstance(kwargs_value, param_type):
                         return (

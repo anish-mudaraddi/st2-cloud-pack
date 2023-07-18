@@ -201,7 +201,7 @@ class ServerManagerTests(unittest.TestCase):
             preset_details=QueryPresetDetails(
                 preset=QueryPresetsString.MATCHES_REGEX,
                 prop=ServerProperties.SERVER_NAME,
-                args={"regex_string": "some-regex-pattern"},
+                args={"regex_string": mock_re_return},
             ),
             output_details=mock_output_details,
         )

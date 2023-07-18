@@ -134,9 +134,7 @@ class ServerManager(QueryManager):
             - properties_to_select - list of strings representing which properties to select
             - output_type - string representing how to output the query
         """
-
-        re.compile(pattern)
-        args = {"regex_string": pattern}
+        args = {"regex_string": re.compile(pattern)}
 
         return self._build_and_run_query(
             preset_details=QueryPresetDetails(
