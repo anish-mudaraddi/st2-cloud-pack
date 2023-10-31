@@ -18,6 +18,9 @@ from custom_types.openstack_query.aliases import (
 
 logger = logging.getLogger(__name__)
 
+# TODO: might want to remove the property methods and favor public attributes
+# pylint:disable=too-many-instance-attributes
+
 
 class QueryBuilder:
     """
