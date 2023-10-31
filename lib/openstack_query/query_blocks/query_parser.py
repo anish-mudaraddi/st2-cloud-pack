@@ -73,6 +73,14 @@ class QueryParser:
         """
         self._group_mappings = group_mappings
 
+    def reset(self):
+        """
+        Method which resets pre-configured grouping and sorting attributes
+        """
+        self.group_by = None
+        self.group_mappings = {}
+        self.sort_by = {}
+
     def parse_sort_by(self, *sort_by: Tuple[PropEnum, SortOrder]) -> None:
         """
         Public method used to configure sorting results

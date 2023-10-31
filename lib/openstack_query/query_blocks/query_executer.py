@@ -31,6 +31,12 @@ class QueryExecuter:
         self._server_side_filters = None
         self._raw_results = []
 
+    def reset(self):
+        """
+        Method which resets results attribute gained from running query
+        """
+        self.raw_results = []
+
     @property
     def client_side_filters(self):
         """

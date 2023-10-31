@@ -292,21 +292,10 @@ class QueryAPI:
         This means that any pre-configured info like select(), where(), group_by() and sort_by() will be deleted
         :param hard: boolean (default False). If true will delete any cached results from previous run() command
         """
-        # reset select
-        self.output.selected_props = set()
-
-        # reset where
-        self.builder.client_side_filters = []
-        self.builder.server_side_filters = []
-        self.builder.server_filter_fallback = []
-
-        # reset group_by
-        self.parser.group_by = None
-        self.parser.group_mappings = {}
-
-        # reset sort_by
-        self.parser.sort_by = {}
+        self.builder.reset()
+        self.output.reset()
+        self.parser.reset()
 
         if hard:
-            self.executer.raw_results = []
+            self.executer.reset()
         return self

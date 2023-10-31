@@ -293,3 +293,13 @@ def test_add_filter_conflicting_presets(instance):
 
     assert instance.server_side_filters == [{"filter1": "val1"}]
     assert instance.client_side_filters == ["client-side-filter"]
+
+
+def test_reset(instance):
+    """
+    Tests reset function resets client and server filters
+    """
+    instance.reset()
+    assert instance.client_side_filters == []
+    assert instance.server_side_filters == []
+    assert instance.server_filter_fallback == []

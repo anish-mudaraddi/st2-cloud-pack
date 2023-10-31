@@ -59,6 +59,12 @@ class QueryOutput:
         """
         self._props = props
 
+    def reset(self):
+        """
+        Method which resets selected props
+        """
+        self.selected_props = set()
+
     def to_string(
         self,
         results: Union[List, Dict],

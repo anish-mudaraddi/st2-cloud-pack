@@ -34,7 +34,6 @@ class QueryBuilder:
         self._client_side_handlers = client_side_handlers
         self._prop_enum_cls = prop_enum_cls
         self._server_side_handler = server_side_handler
-
         self._client_side_filters = []
         self._server_side_filters = []
         self._server_filter_fallback = []
@@ -86,6 +85,14 @@ class QueryBuilder:
         :param fallback_filters: a set of client-side filters
         """
         self._server_filter_fallback = fallback_filters
+
+    def reset(self):
+        """
+        Method which resets pre-configured client-side and server-side filters
+        """
+        self.client_side_filters = []
+        self.server_side_filters = []
+        self.server_filter_fallback = []
 
     def parse_where(
         self,

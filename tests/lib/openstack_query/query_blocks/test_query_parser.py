@@ -481,3 +481,13 @@ def test_run_group_by_with_group_mappings(mock_build_unique_val_groups, instance
         "group1": [{"prop_1": "a", "prop_2": 1}, {"prop_1": "b", "prop_2": 2}],
         "group2": [{"prop_1": "c", "prop_2": 3}],
     }
+
+
+def test_reset(instance):
+    """
+    Tests reset function resets group_by and sort_by attrs
+    """
+    instance.reset()
+    assert instance.group_by is None
+    assert instance.group_mappings == {}
+    assert instance.sort_by == {}

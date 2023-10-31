@@ -185,3 +185,11 @@ def test_parse_results_with_parse_func(instance):
 
     mock_get_output.assert_called_once_with("output_func", parse_func.return_value)
     assert res2 == mock_get_output.return_value
+
+
+def test_reset(instance):
+    """
+    Tests reset function resets raw results
+    """
+    instance.reset()
+    assert instance.raw_results == []

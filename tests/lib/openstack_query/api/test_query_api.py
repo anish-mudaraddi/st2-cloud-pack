@@ -441,13 +441,10 @@ def test_reset(instance):
     select(), where(), group_by(), sort_by() must all be reset
     """
     res = instance.reset()
-    assert instance.output.selected_props == set()
-    assert instance.builder.client_side_filters == []
-    assert instance.builder.server_filter_fallback == []
-    assert instance.parser.group_by is None
-    assert instance.parser.group_mappings == {}
-    assert instance.parser.sort_by == {}
-    assert not instance.executer.raw_results == []
+    instance.builder.reset.assert_called_once()
+    instance.output.reset.assert_called_once()
+    instance.parser.reset.assert_called_once()
+    instance.executer.reset.assert_not_called()
     assert res == instance
 
 
@@ -456,11 +453,8 @@ def test_reset_hard(instance):
     Tests reset(hard=True) - should also reset run()
     """
     res = instance.reset(hard=True)
-    assert instance.output.selected_props == set()
-    assert instance.builder.client_side_filters == []
-    assert instance.builder.server_filter_fallback == []
-    assert instance.parser.group_by is None
-    assert instance.parser.group_mappings == {}
-    assert instance.parser.sort_by == {}
-    assert instance.executer.raw_results == []
+    instance.builder.reset.assert_called_once()
+    instance.output.reset.assert_called_once()
+    instance.parser.reset.assert_called_once()
+    instance.executer.reset.assert_called_once()
     assert res == instance
