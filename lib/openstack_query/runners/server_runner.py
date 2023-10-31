@@ -46,7 +46,7 @@ class ServerRunner(RunnerWrapper):
         # raise error if ambiguous query
         if from_projects and all_projects:
             raise ParseQueryError(
-                "Failed to execute query: ambiguous run params - run with either "
+                "Failed to execute query: ambiguous run() params - run with either "
                 "from_projects or all_projects and not both"
             )
 
@@ -59,7 +59,7 @@ class ServerRunner(RunnerWrapper):
             )
             if from_projects or all_projects:
                 raise ParseQueryError(
-                    "Failed to execute query: run_params given won't work if "
+                    "Failed to execute query: from_projects or all_projects run() params won't work if "
                     "you're not running as admin"
                 )
             return {"projects": [curr_project_id]}
@@ -81,7 +81,8 @@ class ServerRunner(RunnerWrapper):
                 project = conn.identity.find_project(proj, ignore_missing=False)["id"]
             except ResourceNotFound as exp:
                 raise ParseQueryError(
-                    "Failed to execute query: Failed to parse meta params"
+                    f"Failed to execute query: Could not find project with Name or ID '{proj}' "
+                    f"specified in from_projects run() param"
                 ) from exp
             except openstack.exceptions.ForbiddenException as exp:
                 raise ParseQueryError(
@@ -113,7 +114,7 @@ class ServerRunner(RunnerWrapper):
         if "project_id" in filter_kwargs.keys() and "projects" in meta_params:
             raise ParseQueryError(
                 "This query uses a preset that requires searching on project_ids "
-                "- but you've provided projects to search in using from_projects meta param"
+                "- but you've provided projects to search in using from_projects run() param"
                 "- please use one or the other, not both"
                 "- or you are not running as admin"
             )

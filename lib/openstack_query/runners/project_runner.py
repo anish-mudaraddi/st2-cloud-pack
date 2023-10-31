@@ -22,7 +22,9 @@ class ProjectRunner(RunnerWrapper):
     RESOURCE_TYPE = Project
 
     def _parse_meta_params(self, _: OpenstackConnection, **__):
-        logger.debug("ProjectQuery has no meta-params available")
+        logger.debug(
+            "ProjectQuery doesn't take any extra run() parameters - ignoring any given"
+        )
         return {}
 
     def _run_query(

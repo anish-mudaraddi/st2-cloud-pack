@@ -58,18 +58,18 @@ class RunnerWrapper(OpenstackWrapperBase):
         if from_subset and server_side_filters:
             logger.error(
                 "Error: Received server-side filters - suggesting that the query requires getting results via "
-                "openstacksdk, but also openstack objects directly - suggesting that we want to filter a set already "
-                "given. Not sure what to do - aborting."
+                "openstacksdk, but you've also provided openstack objects directly - suggesting that you want to filter"
+                "a set already given. Not sure what to do - aborting."
             )
             raise RuntimeError(
-                "Ambiguous Query: received both server-side filters and values passed directly"
+                "Ambiguous Query: received both server-side filters and values passed directly using 'from_subset'"
             )
 
         logger.debug("making connection to openstack")
         start = time.time()
 
         if from_subset:
-            logger.info("'from_subset' meta param given - running query on subset")
+            logger.info("'from_subset' run() param given - running query on subset")
             resource_objects = self._parse_subset(
                 subset=from_subset,
             )
@@ -133,7 +133,7 @@ class RunnerWrapper(OpenstackWrapperBase):
                 "Running OpenstackSDK Query with: "
                 "\n\tserver side filters: "
                 "\n%s "
-                "\n\n meta kwargs: "
+                "\n\n run() kwargs: "
                 "\n\t%s",
                 filters_log_str,
                 "None" if not meta_param_log_str else meta_param_log_str,
@@ -242,7 +242,7 @@ class RunnerWrapper(OpenstackWrapperBase):
         resources in question and returns them
         :param conn: An OpenstackConnection object - used to connect to openstacksdk
         :param filter_kwargs: An Optional set of filter kwargs to limit the results by when querying openstacksdk
-        :param kwargs: An extra set of meta params to pass to internal _run_query method that changes what/how the
+        :param kwargs: An extra set of run() params to pass to internal _run_query method that changes what/how the
         openstacksdk query is run - these kwargs are specific to the resource runner.
         """
 
@@ -265,6 +265,6 @@ class RunnerWrapper(OpenstackWrapperBase):
     @abstractmethod
     def _parse_meta_params(self, conn: OpenstackConnection, **kwargs) -> Dict[str, str]:
         """
-        This method is a helper function that will parse a set of meta params specific to the resource and
+        This method is a helper function that will parse a set of meta params (run params) specific to the resource and
         return a set of parsed meta-params to pass to _run_query
         """
