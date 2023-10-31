@@ -432,3 +432,35 @@ def test_append_from(mock_query_types_cls, mock_then, instance):
         "current-prop", mock_new_query.to_props.return_value
     )
     assert res == instance
+
+
+def test_reset(instance):
+    """
+    tests reset() function works properly
+    should reset the query user-defined config back to defaults
+    select(), where(), group_by(), sort_by() must all be reset
+    """
+    res = instance.reset()
+    assert instance.output.selected_props == set()
+    assert instance.builder.client_side_filters == []
+    assert instance.builder.server_filter_fallback == []
+    assert instance.parser.group_by is None
+    assert instance.parser.group_mappings == {}
+    assert instance.parser.sort_by == {}
+    assert not instance.executer.raw_results == []
+    assert res == instance
+
+
+def test_reset_hard(instance):
+    """
+    Tests reset(hard=True) - should also reset run()
+    """
+    res = instance.reset(hard=True)
+    assert instance.output.selected_props == set()
+    assert instance.builder.client_side_filters == []
+    assert instance.builder.server_filter_fallback == []
+    assert instance.parser.group_by is None
+    assert instance.parser.group_mappings == {}
+    assert instance.parser.sort_by == {}
+    assert instance.executer.raw_results == []
+    assert res == instance

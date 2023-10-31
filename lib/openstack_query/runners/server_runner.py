@@ -81,7 +81,7 @@ class ServerRunner(RunnerWrapper):
                 project = conn.identity.find_project(proj, ignore_missing=False)["id"]
             except ResourceNotFound as exp:
                 raise ParseQueryError(
-                    "Failed to execute query: Failed to parse meta params"
+                    "Failed to execute query: Failed to parse run() params"
                 ) from exp
             except openstack.exceptions.ForbiddenException as exp:
                 raise ParseQueryError(
