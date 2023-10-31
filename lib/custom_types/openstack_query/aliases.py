@@ -33,7 +33,9 @@ ServerSideFilter = Dict[str, PropValue]
 ServerSideFilters = List[ServerSideFilter]
 
 # A type alias for a function that takes a number of filter params and returns a set of server-side filters
-ServerSideFilterFunc = Callable[[FilterParams], ServerSideFilters]
+ServerSideFilterFunc = Callable[
+    [FilterParams], Union[ServerSideFilters, ServerSideFilter]
+]
 
 # type aliases for mapping server side filter functions to a corresponding preset-property pairs
 PropToServerSideFilterFunc = Dict[PropEnum, ServerSideFilterFunc]
