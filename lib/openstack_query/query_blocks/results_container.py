@@ -73,7 +73,8 @@ class ResultsContainer:
 
         if not self._results:
             raise QueryChainingError(
-                "Query Chaining Error: Tried to apply a set of forwarded results when query has not been run yet"
+                "Query Chaining Error: Could not apply then() or append_from()."
+                "Either run() hasn't been called yet or run() returns no results"
             )
 
         for item in self._results:
