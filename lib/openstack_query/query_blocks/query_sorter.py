@@ -20,7 +20,7 @@ class QuerySorter:
         self._sort_by = {}
 
     def _parse_sort_by_inputs(
-        self, *sort_by: Tuple[Union[PropEnum, str], Union[SortOrder, str]]
+        self, sort_by: List[Tuple[Union[PropEnum, str], Union[SortOrder, str]]]
     ) -> List[Tuple[PropEnum, SortOrder]]:
         """
         Converts list of sort_by() user inputs into Enums, any string aliases will be converted into Enums
@@ -36,13 +36,13 @@ class QuerySorter:
         return parsed_sort_by
 
     def parse_sort_by(
-        self, *sort_by: Tuple[Union[str, PropEnum], Union[str, SortOrder]]
+        self, sort_by: List[Tuple[Union[str, PropEnum], Union[str, SortOrder]]]
     ) -> None:
         """
         Public method used to configure sorting results
         :param sort_by: one or more tuples of property name to sort by and order enum
         """
-        sort_by = self._parse_sort_by_inputs(*sort_by)
+        sort_by = self._parse_sort_by_inputs(sort_by)
 
         sort_by_dict = {}
         for user_selected_prop, _ in sort_by:

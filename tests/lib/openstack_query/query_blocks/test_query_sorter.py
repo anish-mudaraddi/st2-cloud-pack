@@ -28,7 +28,7 @@ def run_sort_by_runner_fixture(instance, mock_get_prop_mapping):
         """
         Method which runs sort_by with different inputs
         """
-        instance.parse_sort_by(*sort_by_specs)
+        instance.parse_sort_by(sort_by_specs)
         with patch.object(
             MockProperties, "get_prop_mapping", wraps=mock_get_prop_mapping
         ) as mock_get_prop_func:
@@ -47,7 +47,7 @@ def test_parse_sort_by_invalid(instance):
     should raise ParseQueryError
     """
     with pytest.raises(ParseQueryError):
-        instance.parse_sort_by((ServerProperties.SERVER_ID, SortOrder.DESC))
+        instance.parse_sort_by([(ServerProperties.SERVER_ID, SortOrder.DESC)])
 
 
 @pytest.mark.parametrize(
@@ -75,7 +75,7 @@ def test_parse_sort_by_with_string_aliases(mock_sort_by_specs, mock_results_cont
     expected_list = sorted(
         mock_as_object_vals, key=lambda k: k[mock_string], reverse=reverse
     )
-    instance.parse_sort_by(*mock_sort_by_specs)
+    instance.parse_sort_by(mock_sort_by_specs)
     res = instance.run_sort_by(mock_obj_list)
     assert [item.as_object() for item in res] == expected_list
 

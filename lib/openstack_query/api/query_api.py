@@ -73,13 +73,15 @@ class QueryAPI:
         self.builder.parse_where(preset, prop, kwargs)
         return self
 
-    def sort_by(self, *sort_by: Tuple[Union[PropEnum, str], Union[SortOrder, str]]):
+    def sort_by(
+        self, sort_by: List[Tuple[Union[PropEnum, str], Union[SortOrder, str]]]
+    ):
         """
         Public method used to configure sorting results
-        :param sort_by: Tuple of property enum to sort by and enum representing sorting order
-            - SortOrder.ASC (ascending) or SortOrder.DESC (descending)
+        :param sort_by: List of Tuples: (Sort By Prop (Enum/string), Sorting Order (Enum/string))
+            - Enum: SortOrder.ASC (ascending) or SortOrder.DESC (descending)
         """
-        self.parser.parse_sort_by(*sort_by)
+        self.parser.parse_sort_by(sort_by)
         return self
 
     def group_by(

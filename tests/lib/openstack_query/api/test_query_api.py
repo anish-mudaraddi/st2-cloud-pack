@@ -346,9 +346,9 @@ def test_sort_by(instance):
     Tests that sort_by method functions expectedly
     method should call QueryParser object parse_sort_by() and return results
     """
-    mock_sort_by = [("some-prop-enum", False), ("some-prop-enum-2", True)]
-    res = instance.sort_by(*mock_sort_by)
-    instance.parser.parse_sort_by.assert_called_once_with(*mock_sort_by)
+    mock_sort_by = [("some-prop-enum", "ascending"), ("some-prop-enum-2", "descending")]
+    res = instance.sort_by(mock_sort_by)
+    instance.parser.parse_sort_by.assert_called_once_with(mock_sort_by)
     assert res == instance
 
 
