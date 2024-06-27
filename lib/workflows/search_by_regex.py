@@ -43,7 +43,7 @@ def search_by_regex(
     )
 
     if sort_by:
-        query.sort_by(*[(p, SortOrder.DESC) for p in sort_by])
+        query.sort_by([(p, SortOrder.DESC) for p in sort_by])
     if group_by:
         query.group_by(group_by)
 

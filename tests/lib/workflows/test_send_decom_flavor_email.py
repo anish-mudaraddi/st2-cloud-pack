@@ -182,7 +182,7 @@ def test_find_users_with_decom_flavor_valid(mock_flavor_query):
     )
     mock_flavor_query_obj.run.assert_called_once_with("test-cloud-account")
     mock_flavor_query_obj.sort_by.assert_called_once_with(
-        (FlavorProperties.FLAVOR_ID, SortOrder.ASC)
+        [(FlavorProperties.FLAVOR_ID, SortOrder.ASC)]
     )
     mock_flavor_query_obj.to_props.assert_called_once()
 
@@ -231,7 +231,7 @@ def test_find_users_with_decom_flavor_invalid_flavor(mock_flavor_query):
     )
     mock_flavor_query_obj.run.assert_called_once_with("test-cloud-account")
     mock_flavor_query_obj.sort_by.assert_called_once_with(
-        (FlavorProperties.FLAVOR_ID, SortOrder.ASC)
+        [(FlavorProperties.FLAVOR_ID, SortOrder.ASC)]
     )
     mock_flavor_query_obj.to_props.assert_called_once()
 
@@ -258,7 +258,7 @@ def test_find_users_with_decom_flavor_no_servers_found(mock_flavor_query):
     )
     mock_flavor_query_obj.run.assert_called_once_with("test-cloud-account")
     mock_flavor_query_obj.sort_by.assert_called_once_with(
-        (FlavorProperties.FLAVOR_ID, SortOrder.ASC)
+        [(FlavorProperties.FLAVOR_ID, SortOrder.ASC)]
     )
     mock_flavor_query_obj.to_props.assert_called_once()
 

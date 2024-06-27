@@ -210,7 +210,7 @@ def test_find_servers_with_decom_images_valid(mock_list_to_regex, mock_image_que
         all_projects=False,
     )
     mock_image_query_obj.sort_by.assert_called_once_with(
-        ("id", "ascending"), ("name", "ascending")
+        [("id", "ascending"), ("name", "ascending")]
     )
     mock_image_query_obj.to_props.assert_called_once()
     mock_image_query_obj.then.assert_called_once_with(
@@ -262,7 +262,7 @@ def test_find_servers_with_decom_images_invalid_images(
         all_projects=True,
     )
     mock_image_query_obj.sort_by.assert_called_once_with(
-        ("id", "ascending"), ("name", "ascending")
+        [("id", "ascending"), ("name", "ascending")]
     )
     mock_image_query_obj.to_props.assert_called_once()
 
@@ -300,7 +300,7 @@ def test_find_servers_with_decom_images_no_servers_found(
         all_projects=False,
     )
     mock_image_query_obj.sort_by.assert_called_once_with(
-        ("id", "ascending"), ("name", "ascending")
+        [("id", "ascending"), ("name", "ascending")]
     )
     mock_image_query_obj.to_props.assert_called_once()
 

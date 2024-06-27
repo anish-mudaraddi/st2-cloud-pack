@@ -113,7 +113,7 @@ def find_servers_with_decom_images(
         from_projects=from_projects if from_projects else None,
         all_projects=not from_projects,
     )
-    image_query.sort_by(("id", "ascending"), ("name", "ascending"))
+    image_query.sort_by([("id", "ascending"), ("name", "ascending")])
     image_query.select(["name"])
 
     if not image_query.to_props():

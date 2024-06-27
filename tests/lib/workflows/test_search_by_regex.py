@@ -81,7 +81,7 @@ def test_search_by_regex_all(mock_openstack_query, output_type):
         args={"value": params["pattern"]},
     )
     mock_query.sort_by.assert_called_once_with(
-        *[(p, SortOrder.DESC) for p in params["sort_by"]]
+        [(p, SortOrder.DESC) for p in params["sort_by"]]
     )
     mock_query.group_by.assert_called_once_with(params["group_by"])
     mock_query.run.assert_called_once_with(

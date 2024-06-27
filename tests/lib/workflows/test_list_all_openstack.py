@@ -65,7 +65,7 @@ def test_list_all_openstack_all(mock_openstack_query, output_type):
 
     mock_query.select.assert_called_once_with(params["properties_to_select"])
     mock_query.sort_by.assert_called_once_with(
-        *[(p, SortOrder.DESC) for p in params["sort_by"]]
+        [(p, SortOrder.DESC) for p in params["sort_by"]]
     )
     mock_query.group_by.assert_called_once_with(params["group_by"])
     mock_query.run.assert_called_once_with(

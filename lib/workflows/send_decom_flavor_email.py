@@ -72,7 +72,7 @@ def find_servers_with_decom_flavors(
         values=flavor_name_list,
     )
     flavor_query.run(cloud_account)
-    flavor_query.sort_by((FlavorProperties.FLAVOR_ID, SortOrder.ASC))
+    flavor_query.sort_by([(FlavorProperties.FLAVOR_ID, SortOrder.ASC)])
 
     if not flavor_query.to_props():
         raise RuntimeError(
