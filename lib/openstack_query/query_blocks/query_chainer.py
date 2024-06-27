@@ -108,7 +108,7 @@ class QueryChainer:
         current_query.parser.group_by = None
 
         # grab all link prop values - including duplicates
-        search_values = current_query.select(link_props[0]).to_props(flatten=True)[
+        search_values = current_query.select([link_props[0]]).to_props(flatten=True)[
             link_props[0].name.lower()
         ]
 
@@ -149,7 +149,7 @@ class QueryChainer:
             query_type = QueryTypes.from_string(query_type)
 
         new_query = current_query.then(query_type, keep_previous_results=False)
-        new_query.select(*props)
+        new_query.select(props)
         new_query.run(cloud_account)
 
         link_props = current_query.chainer.get_link_props(query_type)

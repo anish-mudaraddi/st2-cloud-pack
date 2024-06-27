@@ -520,7 +520,7 @@ def test_parse_select_given_invalid(instance):
 
     # server prop enums are invalid here and should be picked up
     with pytest.raises(ParseQueryError):
-        instance.parse_select(MockProperties.PROP_1, ServerProperties.SERVER_ID)
+        instance.parse_select([MockProperties.PROP_1, ServerProperties.SERVER_ID])
 
 
 def test_parse_select_overwrites_old(instance):
@@ -529,7 +529,7 @@ def test_parse_select_overwrites_old(instance):
     method should overwrite internal attribute selected_props if already set
     """
     instance.selected_props = [MockProperties.PROP_1]
-    instance.parse_select(MockProperties.PROP_2)
+    instance.parse_select([MockProperties.PROP_2])
     assert instance.selected_props == [MockProperties.PROP_2]
 
 

@@ -62,7 +62,7 @@ def run_parse_then_query_valid_fixture(instance):
         mock_current_query.to_props.assert_called_once()
 
         # test getting link prop values works
-        mock_current_query.select.assert_any_call(MockProperties.PROP_1)
+        mock_current_query.select.assert_any_call([MockProperties.PROP_1])
         mock_current_query.select.return_value.to_props.assert_any_call(flatten=True)
 
         if mock_keep_previous_results:
@@ -245,7 +245,7 @@ def test_run_append_from_query(mock_query_types, instance):
     mock_current_query.then.assert_called_once_with(
         mock_query_types.from_string.return_value, keep_previous_results=False
     )
-    mock_new_query.select.assert_called_once_with(*mock_props)
+    mock_new_query.select.assert_called_once_with(mock_props)
     mock_new_query.run.assert_called_once_with(mock_cloud_account)
     mock_current_query.chainer.get_link_props.assert_called_once_with(
         mock_query_types.from_string.return_value

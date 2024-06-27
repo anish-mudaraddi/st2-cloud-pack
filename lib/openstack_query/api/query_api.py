@@ -26,11 +26,11 @@ class QueryAPI:
         self.chainer = query_components.chainer
         self.results_container = None
 
-    def select(self, *props: Union[str, PropEnum]):
+    def select(self, props: Optional[List[Union[str, PropEnum]]] = None):
         """
         Public method used to 'select' properties that the query will return the value of.
         Mutually exclusive to returning objects using select_all()
-        :param props: one or more properties to collect described as enum or a string that can convert to enum
+        :param props: a list of one or more properties to collect described as enum or a string that can convert to enum
         """
 
         # is an idempotent function
@@ -38,7 +38,7 @@ class QueryAPI:
         if not props:
             raise ParseQueryError("provide at least one property to select")
 
-        self.output.parse_select(*props, select_all=False)
+        self.output.parse_select(props, select_all=False)
         logger.debug(
             "selected props are now: %s",
             [prop.name for prop in self.output.selected_props],

@@ -50,9 +50,9 @@ def test_select_with_many_props(instance):
     mock_query_output = MagicMock()
     instance.output = mock_query_output
 
-    res = instance.select(MockProperties.PROP_1, MockProperties.PROP_2)
+    res = instance.select([MockProperties.PROP_1, MockProperties.PROP_2])
     mock_query_output.parse_select.assert_called_once_with(
-        MockProperties.PROP_1, MockProperties.PROP_2, select_all=False
+        [MockProperties.PROP_1, MockProperties.PROP_2], select_all=False
     )
     assert res == instance
 
