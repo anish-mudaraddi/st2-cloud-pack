@@ -112,7 +112,9 @@ def test_find_user_info_valid(mock_user_query):
     }
     res = find_user_info(mock_user_id, mock_cloud_account, mock_override_email)
     mock_user_query.assert_called_once()
-    mock_user_query.return_value.select.assert_called_once_with("name", "email_address")
+    mock_user_query.return_value.select.assert_called_once_with(
+        ["name", "email_address"]
+    )
     mock_user_query.return_value.where.assert_called_once_with(
         "equal_to", "id", value=mock_user_id
     )
@@ -136,7 +138,9 @@ def test_find_user_info_invalid(mock_user_query):
     mock_user_query.return_value.to_props.return_value = []
     res = find_user_info(mock_user_id, mock_cloud_account, mock_override_email)
     mock_user_query.assert_called_once()
-    mock_user_query.return_value.select.assert_called_once_with("name", "email_address")
+    mock_user_query.return_value.select.assert_called_once_with(
+        ["name", "email_address"]
+    )
     mock_user_query.return_value.where.assert_called_once_with(
         "equal_to", "id", value=mock_user_id
     )
@@ -163,7 +167,9 @@ def test_find_user_info_no_email_address(mock_user_query):
     }
     res = find_user_info(mock_user_id, mock_cloud_account, mock_override_email)
     mock_user_query.assert_called_once()
-    mock_user_query.return_value.select.assert_called_once_with("name", "email_address")
+    mock_user_query.return_value.select.assert_called_once_with(
+        ["name", "email_address"]
+    )
     mock_user_query.return_value.where.assert_called_once_with(
         "equal_to", "id", value=mock_user_id
     )
@@ -217,7 +223,7 @@ def test_find_servers_with_decom_images_valid(mock_list_to_regex, mock_image_que
         from_projects=["project1", "project2"],
         all_projects=False,
     )
-    mock_server_query_obj.select.assert_called_once_with("id", "name", "addresses")
+    mock_server_query_obj.select.assert_called_once_with(["id", "name", "addresses"])
     mock_server_query_obj.to_props.assert_called_once()
 
     mock_server_query_obj.append_from.assert_called_once_with(
@@ -304,7 +310,7 @@ def test_find_servers_with_decom_images_no_servers_found(
         from_projects=["project1", "project2"],
         all_projects=False,
     )
-    mock_server_query_obj.select.assert_called_once_with("id", "name", "addresses")
+    mock_server_query_obj.select.assert_called_once_with(["id", "name", "addresses"])
     mock_server_query_obj.to_props.assert_called_once()
 
 

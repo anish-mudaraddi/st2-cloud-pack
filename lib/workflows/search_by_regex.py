@@ -34,7 +34,7 @@ def search_by_regex(
     if not properties_to_select:
         query.select_all()
     else:
-        query.select(*properties_to_select)
+        query.select(properties_to_select)
 
     query.where(
         preset=QueryPresetsString.MATCHES_REGEX,

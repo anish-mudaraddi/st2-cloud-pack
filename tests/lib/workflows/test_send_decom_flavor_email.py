@@ -92,7 +92,7 @@ def test_find_user_info_valid(mock_user_query):
     res = find_user_info(mock_user_id, mock_cloud_account, mock_override_email)
     mock_user_query.assert_called_once()
     mock_user_query.return_value.select.assert_called_once_with(
-        UserProperties.USER_NAME, UserProperties.USER_EMAIL
+        [UserProperties.USER_NAME, UserProperties.USER_EMAIL]
     )
     mock_user_query.return_value.where.assert_called_once_with(
         QueryPresetsGeneric.EQUAL_TO, UserProperties.USER_ID, value=mock_user_id
@@ -118,7 +118,7 @@ def test_find_user_info_invalid(mock_user_query):
     res = find_user_info(mock_user_id, mock_cloud_account, mock_override_email)
     mock_user_query.assert_called_once()
     mock_user_query.return_value.select.assert_called_once_with(
-        UserProperties.USER_NAME, UserProperties.USER_EMAIL
+        [UserProperties.USER_NAME, UserProperties.USER_EMAIL]
     )
     mock_user_query.return_value.where.assert_called_once_with(
         QueryPresetsGeneric.EQUAL_TO, UserProperties.USER_ID, value=mock_user_id
@@ -147,7 +147,7 @@ def test_find_user_info_no_email_address(mock_user_query):
     res = find_user_info(mock_user_id, mock_cloud_account, mock_override_email)
     mock_user_query.assert_called_once()
     mock_user_query.return_value.select.assert_called_once_with(
-        UserProperties.USER_NAME, UserProperties.USER_EMAIL
+        [UserProperties.USER_NAME, UserProperties.USER_EMAIL]
     )
     mock_user_query.return_value.where.assert_called_once_with(
         QueryPresetsGeneric.EQUAL_TO, UserProperties.USER_ID, value=mock_user_id
@@ -196,9 +196,11 @@ def test_find_users_with_decom_flavor_valid(mock_flavor_query):
         all_projects=False,
     )
     mock_server_query_obj.select.assert_called_once_with(
-        ServerProperties.SERVER_ID,
-        ServerProperties.SERVER_NAME,
-        ServerProperties.ADDRESSES,
+        [
+            ServerProperties.SERVER_ID,
+            ServerProperties.SERVER_NAME,
+            ServerProperties.ADDRESSES,
+        ]
     )
     mock_server_query_obj.to_props.assert_called_once()
 
@@ -267,9 +269,11 @@ def test_find_users_with_decom_flavor_no_servers_found(mock_flavor_query):
         all_projects=False,
     )
     mock_server_query_obj.select.assert_called_once_with(
-        ServerProperties.SERVER_ID,
-        ServerProperties.SERVER_NAME,
-        ServerProperties.ADDRESSES,
+        [
+            ServerProperties.SERVER_ID,
+            ServerProperties.SERVER_NAME,
+            ServerProperties.ADDRESSES,
+        ]
     )
     mock_server_query_obj.to_props.assert_called_once()
 

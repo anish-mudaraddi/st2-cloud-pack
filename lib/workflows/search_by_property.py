@@ -42,7 +42,7 @@ def search_by_property(
     if not properties_to_select:
         query.select_all()
     else:
-        query.select(*properties_to_select)
+        query.select(properties_to_select)
 
     query.where(
         preset=QueryPresetsGeneric.from_string(search_mode),

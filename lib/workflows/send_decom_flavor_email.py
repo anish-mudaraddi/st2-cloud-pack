@@ -88,9 +88,11 @@ def find_servers_with_decom_flavors(
         all_projects=not from_projects,
     )
     server_query.select(
-        ServerProperties.SERVER_ID,
-        ServerProperties.SERVER_NAME,
-        ServerProperties.ADDRESSES,
+        [
+            ServerProperties.SERVER_ID,
+            ServerProperties.SERVER_NAME,
+            ServerProperties.ADDRESSES,
+        ]
     )
 
     if not server_query.to_props():
@@ -160,7 +162,7 @@ def find_user_info(user_id, cloud_account, override_email_address):
     :param override_email_address: email address to return if no email address found via UserQuery
     """
     user_query = UserQuery()
-    user_query.select(UserProperties.USER_NAME, UserProperties.USER_EMAIL)
+    user_query.select([UserProperties.USER_NAME, UserProperties.USER_EMAIL])
     user_query.where(
         QueryPresetsGeneric.EQUAL_TO, UserProperties.USER_ID, value=user_id
     )

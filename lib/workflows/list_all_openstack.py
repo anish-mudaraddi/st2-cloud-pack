@@ -30,7 +30,7 @@ def list_all_openstack(
     if not properties_to_select:
         query.select_all()
     else:
-        query.select(*properties_to_select)
+        query.select(properties_to_select)
 
     if sort_by:
         query.sort_by(*[(p, SortOrder.DESC) for p in sort_by])

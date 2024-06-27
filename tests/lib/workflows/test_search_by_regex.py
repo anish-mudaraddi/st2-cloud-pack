@@ -74,7 +74,7 @@ def test_search_by_regex_all(mock_openstack_query, output_type):
     }
     res = search_by_regex(**params)
 
-    mock_query.select.assert_called_once_with(*params["properties_to_select"])
+    mock_query.select.assert_called_once_with(params["properties_to_select"])
     mock_query.where.assert_called_once_with(
         preset=QueryPresetsString.MATCHES_REGEX,
         prop=params["property_to_search_by"],

@@ -49,7 +49,7 @@ def search_by_datetime(
     if not properties_to_select:
         query.select_all()
     else:
-        query.select(*properties_to_select)
+        query.select(properties_to_select)
 
     query.where(
         preset=QueryPresetsDateTime.from_string(search_mode),

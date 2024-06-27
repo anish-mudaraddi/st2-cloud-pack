@@ -98,7 +98,7 @@ def test_search_by_datetime_all(mock_preset_enum, mock_openstack_query, output_t
     }
     res = search_by_datetime(**params)
 
-    mock_query.select.assert_called_once_with(*params["properties_to_select"])
+    mock_query.select.assert_called_once_with(params["properties_to_select"])
     mock_query.where.assert_called_once_with(
         preset=mock_preset_enum.from_string.return_value,
         prop=params["property_to_search_by"],

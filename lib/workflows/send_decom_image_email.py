@@ -114,7 +114,7 @@ def find_servers_with_decom_images(
         all_projects=not from_projects,
     )
     image_query.sort_by(("id", "ascending"), ("name", "ascending"))
-    image_query.select("name")
+    image_query.select(["name"])
 
     if not image_query.to_props():
         raise RuntimeError(
@@ -129,7 +129,7 @@ def find_servers_with_decom_images(
         from_projects=from_projects or None,
         all_projects=not from_projects,
     )
-    server_query.select("id", "name", "addresses")
+    server_query.select(["id", "name", "addresses"])
 
     if not server_query.to_props():
         raise RuntimeError(
@@ -196,7 +196,7 @@ def find_user_info(user_id, cloud_account, override_email_address):
     :param override_email_address: email address to return if no email address found via UserQuery
     """
     user_query = UserQuery()
-    user_query.select("name", "email_address")
+    user_query.select(["name", "email_address"])
     user_query.where("equal_to", "id", value=user_id)
     user_query.run(cloud_account=cloud_account)
     res = user_query.to_props(flatten=True)
